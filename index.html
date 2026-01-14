@@ -121,7 +121,24 @@ button{
     <input type="text" id="msg" placeholder="Escribe un mensaje">
     <button onclick="send()">➤</button>
 </div>
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } 
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "chat-pwa-2e236.firebaseapp.com",
+    projectId: "chat-pwa-2e236",
+    storageBucket: "chat-pwa-2e236.appspot.com",
+    messagingSenderId: "105304250494",
+    appId: "1:105304250494:web:d03f21db9d53fb30f3e02f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app); // 👈 IMPORTANTE
+</script>
 <script>
 const chat = document.getElementById("chat");
 
