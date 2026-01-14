@@ -141,25 +141,38 @@ button{
 </script>
 <script>
 const chat = document.getElementById("chat");
+const messagesRef = collection(db, "Mensajes");
 
+const q = query(messagesRef, orderBy("created"));
+
+onSnapshot(q, (snapshot) => {
+  chat.innerHTML = "";
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    addMsg(data.text, data.side);
+  });
+});
 /* Cargar mensajes */
-let messages = JSON.parse(localStorage.getItem("chat")) || [];
+
 messages.forEach(m => addMsg(m.text, m.side));
 
-function send(){
-    const input = document.getElementById("msg");
-    if(input.value.trim() === "") return;
+async function send(){
+  const input = document.getElementById("msg");
+  if(input.value.trim() === "") return;
 
-    addMsg(input.value, "right");
-    messages.push({text: input.value, side:"right"});
-    save();
+  await addDoc(collection(db, "Mensajes"), {
+    text: input.value,
+    side: "right",
+    created: serverTimestamp()
+  });
 
-    input.value = "";
+  input.value = "";
+}
 
     /* Respuesta automática */
     setTimeout(()=>{
         addMsg("Mensaje recibido", "left");
-        messages.push({text:"Mensaje recibido", side:"left"});
+        messages.push();
         save();
     },500);
 }
@@ -177,10 +190,8 @@ function addMsg(text, side){
 
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
-}
+    };
 
-function save(){
-    localStorage.setItem("chat", JSON.stringify(messages));
 }
 </script>
 
